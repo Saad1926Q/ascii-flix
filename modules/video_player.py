@@ -5,6 +5,7 @@ import time
 import cv2
 
 from utils.image_utils import read_img,resize_img,img_to_ascii,pixel_to_char
+from utils.os_utils import clear_screen
 
 class VideoPlayer():
     def __init__(self):
@@ -74,6 +75,7 @@ class VideoPlayer():
 
 
         wrapper(main)
+        clear_screen()
         home_screen.active=True
         home_screen.create_logo()
         home_screen.display_home_screen(video_player=self)
