@@ -4,21 +4,21 @@ from rich.console import Console
 import os
 
 from utils.image_utils import read_img,resize_img,img_to_ascii,pixel_to_char
+from utils.os_utils import clear_screen
 
 class HomeScreen:
     def __init__(self):
         self.active=True #When active then display the home screen
+        self.close_app=False
         self.console=Console()
-        self.create_logo()
-        self.display_home_screen()
     
     def create_logo(self):
         image=read_img('ascii_flix_logo_cropped.png')
-        resized_img=cv2.resize(image,(100,60))
-        ascii_art=img_to_ascii(resized_img)
+        resized_img=cv2.resize(image,(self.console.width,self.console.height-5))
+        ascii_art=img_to_ascii(resized_img,mode="filled")
 
         colored_img=cv2.imread('ascii_flix_logo_cropped_02.png')
-        resized_img_colored=cv2.resize(colored_img,(100,60))
+        resized_img_colored=cv2.resize(colored_img,(self.console.width,self.console.height-5))
 
         self.logo=rich.text.Text("")
 
@@ -32,9 +32,9 @@ class HomeScreen:
             i+=1
             self.logo+=rich.text.Text("\n")
         
-    def display_home_screen(self):
+    def display_home_screen(self,video_player):
         while self.active==True:
-            os.system('cls')
+            clear_screen()
             self.console.print(self.logo,justify="center")
             slogan=rich.text.Text("Reimagining Video: ASCII Art in Your Terminal")
             slogan.stylize("rgb(185,105,209)")
@@ -42,8 +42,63 @@ class HomeScreen:
             self.console.print(slogan,justify="center")
             self.console.print("\n")
             self.console.print("\n")
-            input=self.console.input("Type 'start' to continue ")
+            
+            exit=self.console.input("Enter 'quit' if you want to quit, otherwise type anything and press enter ")
+            if exit.strip().lower()=="quit":
+                self.close_app=True
+                break
 
-            if(input=="start"):
-                os.system('cls')
-                self.active=False
+            video_exists=False
+            while video_exists==False:
+                video_path=self.console.input("Enter video path(preferably mp4 format) ")
+                if os.path.exists(video_path):
+                    if video_path.endswith(".mp4"):
+                        video_exists=True
+                        video_player.video_path=video_path
+                    else:
+                        clear_screen()
+                        self.console.print(self.logo,justify="center")
+                        slogan=rich.text.Text("Reimagining Video: ASCII Art in Your Terminal")
+                        slogan.stylize("rgb(185,105,209)")
+                        self.console.print("\n")
+                        self.console.print(slogan,justify="center")
+                        self.console.print("\n")
+                        self.console.print("\n")
+                        self.console.print("enter file of mp4 format.")
+                else:
+                    clear_screen()
+                    self.console.print(self.logo,justify="center")
+                    slogan=rich.text.Text("Reimagining Video: ASCII Art in Your Terminal")
+                    slogan.stylize("rgb(185,105,209)")
+                    self.console.print("\n")
+                    self.console.print(slogan,justify="center")
+                    self.console.print("\n")
+                    self.console.print("\n")
+                    self.console.print("Invalid path. Please try again.")
+            correct_mode=False
+            while correct_mode==False:
+                mode=self.console.input("Enter mode (normal/filled) ")
+                if mode.strip().lower()=="normal" or mode.strip().lower()=="filled":
+                    correct_mode=True
+                    video_player.mode=mode
+                else:
+                    clear_screen()
+                    self.console.print(self.logo,justify="center")
+                    slogan=rich.text.Text("Reimagining Video: ASCII Art in Your Terminal")
+                    slogan.stylize("rgb(185,105,209)")
+                    self.console.print("\n")
+                    self.console.print(slogan,justify="center")
+                    self.console.print("\n")
+                    self.console.print("\n")
+                    self.console.print("Enter a valid mode.")
+
+            clear_screen()
+            self.active=False
+        
+        if self.close_app==False:
+            video_player.play_video(home_screen=self)
+        else:
+            clear_screen()
+        
+
+            

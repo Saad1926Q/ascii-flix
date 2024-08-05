@@ -2,6 +2,7 @@ import cv2
 
 THRESHOLD=[0,32,64,96,128,160,191,224]
 CHARACTER=['.',',',':',';','=','+','*','#']
+CHARACTER_FILLED = [' ', '░', '▒', '▓', '█', '█', '█', '█']
 
 def read_img(img_path):
     image=cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)
@@ -23,7 +24,7 @@ def resize_img(image,window_height,window_width):
     resized_img=cv2.resize(image,(new_width,new_height))
     return resized_img
 
-def pixel_to_char(pixel_intensity):
+def pixel_to_char(pixel_intensity,mode):
     index=-1
     for i in range(len(THRESHOLD)):
         if pixel_intensity>=THRESHOLD[i]:
@@ -33,13 +34,16 @@ def pixel_to_char(pixel_intensity):
     if index==-1:
         return ""
     else:
-        return CHARACTER[index] 
+        if mode=="normal":
+            return CHARACTER[index]
+        else:
+             return CHARACTER_FILLED[index]
 
-def img_to_ascii(image):
+def img_to_ascii(image,mode):
     output=""
     for row in image:
         for pixel_intensity in row:
-            output+=pixel_to_char(pixel_intensity)
+            output+=pixel_to_char(pixel_intensity,mode)
         output+="\n"
     
     output_list=list(output.split("\n"))
