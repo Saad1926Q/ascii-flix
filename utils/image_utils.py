@@ -1,4 +1,6 @@
 import cv2
+import requests
+import numpy as np
 
 THRESHOLD=[0,32,64,96,128,160,191,224]
 CHARACTER=['.',',',':',';','=','+','*','#']
@@ -48,3 +50,13 @@ def img_to_ascii(image,mode):
     
     output_list=list(output.split("\n"))
     return output_list
+
+def get_img_from_url(url,color):
+    response = requests.get(url)
+    image_data = response.content
+    image_array = np.frombuffer(image_data, np.uint8)
+    if color==1:
+        image = cv2.imdecode(image_array,cv2.IMREAD_COLOR)
+    else:
+        image = cv2.imdecode(image_array, cv2.IMREAD_GRAYSCALE)
+    return image
