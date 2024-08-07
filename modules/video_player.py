@@ -14,25 +14,25 @@ class VideoPlayer():
     def play_video(self,home_screen):
         def main(stdscr):
             video_path=self.video_path
-
+            sound=None
             video=cv2.VideoCapture(video_path)
             stdscr.nodelay(True)
 
             video_clip = VideoFileClip(video_path)
             audio = video_clip.audio
             audio_path = "extracted_audio.wav"
-            audio.write_audiofile(audio_path)
-
-            pygame.mixer.init()
-            sound = pygame.mixer.Sound(audio_path)
-
+            if audio is not None:
+                audio.write_audiofile(audio_path)
+                pygame.mixer.init()
+                sound = pygame.mixer.Sound(audio_path)
+                sound.play()
             tm1=time.time()
             start_time=time.time()
             frames=0
             fps=0
             target_fps=video.get(cv2.CAP_PROP_FPS)
             delay=1/target_fps
-            sound.play()
+
             while True:
                 ret,frame=video.read()
                 window_height, window_width = stdscr.getmaxyx()
@@ -67,7 +67,8 @@ class VideoPlayer():
                     except:
                         key=None
                     if key =="h":
-                        sound.stop()
+                        if sound is not None:
+                            sound.stop()
                         stdscr.clear()
                         break
                 else:
