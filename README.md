@@ -40,6 +40,14 @@ For those who are unsure how to get the path of the video file:
    - Use the `pwd` command to print the current directory path.
    - Combine this path with the video file name. For example, if `pwd` outputs `/home/yourname/videos` and your file is `example.mp4`, the full path will be `/home/yourname/videos/example.mp4`.
 
+### Getting the Path of the Video
+ASCII Flix supports two display modes:
+
+1.Normal Mode
+2.Filled Mode
+
+![ASCII Flix Modes](https://i.imgur.com/y1FFnie.png)
+
 ### Manual Script Addition
 
 In rare cases where the `ascii-flix` command does not work after installation, you can manually add the script:
